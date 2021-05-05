@@ -1,5 +1,4 @@
 const inquirer = require('inquirer');
-const Sequelize = require('sequelize');
 const qList = [{
     type: 'list',
     name: 'do',

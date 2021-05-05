@@ -1,4 +1,6 @@
 const inquirer = require('inquirer');
+//0 sales lead, 1 sales person, 2 lead engineer, 3 software engineer,4 accountant,5 legal team lead, 6 lawyer
+const choicesA=['Sales Lead','Sales person','Lead Engineer','Software Engineer','Accountant','Legal Team Lead', 'Lawyer'];
 const qList = [{
     type: 'list',
     name: 'do',
@@ -19,28 +21,28 @@ const aEmp=[{
     type: 'list',
     name: 'role',
     message: 'Whats the employees role?',
-    choices: ['Sales Lead','Sales person','Lead Engineer','Software Engineer','Accountant','Legal Team Lead', 'Lawyer']
+    choices: choicesA,
 },
 {
     type: 'input',
     name: 'eManager',
-    message: 'Who is the employees manager?'
+    message: 'What is the managers id?'
 }]
 const mysql=require('mysql')
 const connection=mysql.createConnection(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
   {
     host: 'localhost',
     dialect: 'mysql',
     port: 3306,
+    user: 'root',
+    password:'password',
+    database: 'eTracker_db',
   }
 );
-// connection.connect((err) => {
-//   if (err) throw err;
-// });
-startOptions();
+connection.connect((err) => {
+  if (err) throw err;
+  startOptions();
+});
 async function startOptions() {
     try{
     const answer =await inquirer.prompt(qList);
@@ -90,20 +92,21 @@ async function aRole(){
 async function aEmployee(){
     try{
         const answer =await inquirer.prompt(aEmp);
-        console.log(answer.role);
+        const theRole= myRole(answer.role);
         const query = connection.query(
             'INSERT INTO employee SET ? ',
             {
               first_name: answer.firstName,
               last_name: answer.lastName,
-              role_id: answer.role,
-              manager_id: answer.eManager,
+              role_id: theRole,
+              manager_id: answer.eManager
             },
             (err, res) => {
               if (err) throw err;
             }
             
           );
+          startOptions();
         }
         catch(error){
             console.log("error");
@@ -121,4 +124,22 @@ async function vEmployee(){
 async function uEmpRoles(){
 
 }
-//module.exports = eTracker;
+function myRole(role){
+    switch (role){
+     case 'Sales Lead':
+         return 0;
+     case 'Sales person':
+         return 1;
+     case 'Lead Engineer':
+         return 2;
+     case 'Software Engineer':
+         return 3;
+     case 'Accountant':
+         return 4;
+     case 'Legal Team Lead':
+         return 5;
+     case 'Lawyer':
+         return 6;
+    }
+    
+}

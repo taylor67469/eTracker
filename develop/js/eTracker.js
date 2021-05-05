@@ -28,12 +28,17 @@ const aEmp=[{
     name: 'eManager',
     message: 'What is the managers id?'
 }]
+const depart={
+    type:'input',
+    name: 'depart',
+    message:'Please add a department.'
+}
 const mysql=require('mysql')
 const connection=mysql.createConnection(
   {
     host: 'localhost',
     dialect: 'mysql',
-    port: 3306,
+        
     user: 'root',
     password:'password',
     database: 'eTracker_db',
@@ -79,8 +84,18 @@ function myChoice(choice) {
 }
 async function aDepartment() {
     try{
-        const answer =await inquirer.prompt(aEmp);
-        console.log(answer);
+        const answer =await inquirer.prompt(depart);
+        const query = connection.query(
+            'INSERT INTO employee SET ? ',
+            {
+              d_name: answer.depart
+            },
+            (err, res) => {
+              if (err) throw err;
+            }
+            
+          );
+          startOptions();
         }
         catch(error){
             console.log("error");

@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-// require('dotenv').config();
+// const Sequelize = require('sequelize');
+// // const eTracker= require('../develop/js/eTracker')
 const mysql=require('mysql')
 const connection=mysql.createConnection(
   process.env.DB_NAME,
@@ -11,5 +11,6 @@ const connection=mysql.createConnection(
     port: 3306,
   }
 );
-
-module.exports = connection;
+connection.connect((err) => {
+  if (err) throw err;
+});

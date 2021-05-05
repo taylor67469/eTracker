@@ -26,6 +26,20 @@ const aEmp=[{
     name: 'eManager',
     message: 'Who is the employees manager?'
 }]
+const mysql=require('mysql')
+const connection=mysql.createConnection(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: 'localhost',
+    dialect: 'mysql',
+    port: 3306,
+  }
+);
+// connection.connect((err) => {
+//   if (err) throw err;
+// });
 startOptions();
 async function startOptions() {
     try{
@@ -78,7 +92,7 @@ async function aEmployee(){
         const answer =await inquirer.prompt(aEmp);
         console.log(answer.role);
         const query = connection.query(
-            'INSERT INTO employee SET ?',
+            'INSERT INTO employee SET ? ',
             {
               first_name: answer.firstName,
               last_name: answer.lastName,
@@ -107,4 +121,4 @@ async function vEmployee(){
 async function uEmpRoles(){
 
 }
-module.exports = eTracker;
+//module.exports = eTracker;

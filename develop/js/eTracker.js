@@ -86,7 +86,7 @@ async function aDepartment() {
     try{
         const answer =await inquirer.prompt(depart);
         const query = connection.query(
-            'INSERT INTO employee SET ? ',
+            'INSERT INTO department SET ? ',
             {
               d_name: answer.depart
             },
@@ -95,6 +95,7 @@ async function aDepartment() {
             }
             
           );
+          console.log(answer.depart);
           startOptions();
         }
         catch(error){

@@ -1,10 +1,10 @@
 const express = require('express');
 //const routes = require('./routes');
-const sequelize = require('./config/connection');
 const eTracker=require('./develop/js/eTracker');
-const mySql=require('mysql');
+const mysql=require('mysql');
 const app = express();
 const PORT = process.env.PORT || 3001;
+const connection=require('./config/connection')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -13,6 +13,6 @@ app.use(express.urlencoded({ extended: true }));
 //app.use(routes);
 
 // turn on connection to db and server
-sequelize.sync({ force: false }).then(() => {
+sequelize.createConnection({ force: false }).then(() => {
   app.listen(PORT, () => console.log('Now listening'));
 });

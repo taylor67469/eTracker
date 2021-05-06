@@ -1,13 +1,13 @@
 const inquirer = require('inquirer');
 //0 sales lead, 1 sales person, 2 lead engineer, 3 software engineer,4 accountant,5 legal team lead, 6 lawyer
-const choicesA=['Sales Lead','Sales person','Lead Engineer','Software Engineer','Accountant','Legal Team Lead', 'Lawyer'];
+// const choicesA = ['Sales Lead', 'Sales person', 'Lead Engineer', 'Software Engineer', 'Accountant', 'Legal Team Lead', 'Lawyer'];
 const qList = [{
     type: 'list',
     name: 'do',
     message: 'What would you like to do?',
     choices: ['Add departments', 'Add role', 'Add employee', 'View department', 'View role', 'View employee', 'Update employee roles']
 }];
-const aEmp=[{
+const aEmp = [{
     type: 'input',
     name: 'firstName',
     message: 'Whats the employees first name?',
@@ -18,48 +18,62 @@ const aEmp=[{
     message: 'Whats the employees last name?',
 },
 {
-    type: 'list',
+    type: 'input',
     name: 'role',
-    message: 'Whats the employees role?',
-    choices: choicesA,
+    message: 'Whats the employees role id?',
 },
 {
     type: 'input',
     name: 'eManager',
     message: 'What is the managers id?'
 }]
-const depart={
-    type:'input',
+const depart = {
+    type: 'input',
     name: 'depart',
-    message:'Please add a department.'
+    message: 'Please add a department.'
 }
-const mysql=require('mysql')
-const connection=mysql.createConnection(
-  {
-    host: 'localhost',
-    dialect: 'mysql',
-        
-    user: 'root',
-    password:'password',
-    database: 'eTracker_db',
-  }
+const tRole = [{
+    type: 'input',
+    name: 'title',
+    message: 'What is the title of your role?',
+
+},
+{
+    type: 'input',
+    name: 'salary',
+    message: 'What is the salary?'
+},{
+    type: 'input',
+    name: 'departId',
+    message: 'What is the department id?'
+}]
+const mysql = require('mysql')
+const connection = mysql.createConnection(
+    {
+        host: 'localhost',
+        dialect: 'mysql',
+
+        user: 'root',
+        password: 'password',
+        database: 'eTracker_db',
+    }
 );
 connection.connect((err) => {
-  if (err) throw err;
-  startOptions();
+    if (err) throw err;
+    startOptions();
 });
 async function startOptions() {
-    try{
-    const answer =await inquirer.prompt(qList);
-    myChoice(answer.do);
+    try {
+        const answer = await inquirer.prompt(qList);
+        myChoice(answer.do);
     }
-    catch(error){
+    catch (error) {
         console.log("error");
     }
 }
 function myChoice(choice) {
     switch (choice) {
-        case 'Add departments': 
+        case 'Add departments':
             aDepartment();
             break;
         case 'Add role':
@@ -83,79 +97,96 @@ function myChoice(choice) {
     }
 }
 async function aDepartment() {
-    try{
-        const answer =await inquirer.prompt(depart);
+    try {
+        const answer = await inquirer.prompt(depart);
         const query = connection.query(
             'INSERT INTO department SET ? ',
             {
-              d_name: answer.depart
+                d_name: answer.depart
             },
             (err, res) => {
-              if (err) throw err;
+                if (err) throw err;
             }
-            
-          );
-          console.log(answer.depart);
-          startOptions();
-        }
-        catch(error){
-            console.log("error");
-        }
-}
-async function aRole(){
 
+        );
+        startOptions();
+    }
+    catch (error) {
+        console.log("error");
+    }
 }
-async function aEmployee(){
-    try{
-        const answer =await inquirer.prompt(aEmp);
-        const theRole= myRole(answer.role);
+async function aRole() {
+    try {
+        const answer = await inquirer.prompt(tRole);
+        const query = connection.query(
+            'INSERT INTO role SET ? ',
+            {
+                title: answer.title,
+                salary: answer.salary,
+                department_id: answer.departId
+            },
+            (err, res) => {
+                if (err) throw err;
+            }
+
+        );
+        startOptions();
+    }
+    catch (error) {
+        console.log("error");
+    }
+}
+async function aEmployee() {
+    try {
+        const answer = await inquirer.prompt(aEmp);
+        // const theRole= myRole(answer.role);
         const query = connection.query(
             'INSERT INTO employee SET ? ',
             {
-              first_name: answer.firstName,
-              last_name: answer.lastName,
-              role_id: theRole,
-              manager_id: answer.eManager
+                first_name: answer.firstName,
+                last_name: answer.lastName,
+                role_id: answer.role,
+                manager_id: answer.eManager
             },
             (err, res) => {
-              if (err) throw err;
+                if (err) throw err;
             }
-            
-          );
-          startOptions();
-        }
-        catch(error){
-            console.log("error");
-        }
-}
-async function vDepartment(){
 
-}
-async function vRole(){
-
-}
-async function vEmployee(){
-
-}
-async function uEmpRoles(){
-
-}
-function myRole(role){
-    switch (role){
-     case 'Sales Lead':
-         return 0;
-     case 'Sales person':
-         return 1;
-     case 'Lead Engineer':
-         return 2;
-     case 'Software Engineer':
-         return 3;
-     case 'Accountant':
-         return 4;
-     case 'Legal Team Lead':
-         return 5;
-     case 'Lawyer':
-         return 6;
+        );
+        startOptions();
     }
-    
+    catch (error) {
+        console.log("error");
+    }
 }
+async function vDepartment() {
+
+}
+async function vRole() {
+
+}
+async function vEmployee() {
+
+}
+async function uEmpRoles() {
+
+}
+// function myRole(role){
+//     switch (role){
+//      case 'Sales Lead':
+//          return 0;
+//      case 'Sales person':
+//          return 1;
+//      case 'Lead Engineer':
+//          return 2;
+//      case 'Software Engineer':
+//          return 3;
+//      case 'Accountant':
+//          return 4;
+//      case 'Legal Team Lead':
+//          return 5;
+//      case 'Lawyer':
+//          return 6;
+//     }
+    
+// }

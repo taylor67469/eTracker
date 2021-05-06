@@ -202,14 +202,3 @@ async function vEmployee() {
       });
       
 }
-// async function uEmpRoles(){
-//     connection.query(
-//         'UPDATE employee SET title = ? Where ID = ?',
-//         ['South Africa', 1],
-//         (err, result) => {
-//           if (err) throw err;
-      
-//           console.log(`Changed ${result.changedRows} row(s)`);
-//         }
-//       );
-// }

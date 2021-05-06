@@ -1,6 +1,5 @@
 const inquirer = require('inquirer');
-//0 sales lead, 1 sales person, 2 lead engineer, 3 software engineer,4 accountant,5 legal team lead, 6 lawyer
-// const choicesA = ['Sales Lead', 'Sales person', 'Lead Engineer', 'Software Engineer', 'Accountant', 'Legal Team Lead', 'Lawyer'];
+const cTable = require('console.table')
 const qList = [{
     type: 'list',
     name: 'do',
@@ -139,7 +138,7 @@ async function aRole() {
 async function aEmployee() {
     try {
         const answer = await inquirer.prompt(aEmp);
-        // const theRole= myRole(answer.role);
+        if(answer.eManager!=null){
         const query = connection.query(
             'INSERT INTO employee SET ? ',
             {
@@ -153,6 +152,21 @@ async function aEmployee() {
             }
 
         );
+        }
+        else{
+            const query = connection.query(
+                'INSERT INTO employee SET ? ',
+                {
+                    first_name: answer.firstName,
+                    last_name: answer.lastName,
+                    role_id: answer.role,
+                },
+                (err, res) => {
+                    if (err) throw err;
+                }
+    
+            );
+        }
         startOptions();
     }
     catch (error) {
@@ -160,33 +174,42 @@ async function aEmployee() {
     }
 }
 async function vDepartment() {
-
+    connection.query('SELECT * FROM department', (err,rows) => {
+        if(err) throw err;
+      
+        console.log('Data received from Db:\n');
+        console.table(['name']);
+        startOptions();
+      });
+      
 }
 async function vRole() {
-
+    connection.query('SELECT * FROM role', (err,rows) => {
+        if(err) throw err;
+      
+        console.log('Data received from Db:\n');
+        console.table(['title','salary','department_id'],rows);
+        startOptions();
+      });
 }
 async function vEmployee() {
-
+    connection.query('SELECT * FROM employee', (err,rows) => {
+        if(err) throw err;
+      
+        console.log('Data received from Db:\n');
+        console.table(['first_name', 'last_name','title','department','salary','manager'], rows);
+        startOptions();
+      });
+      
 }
-async function uEmpRoles() {
-
-}
-// function myRole(role){
-//     switch (role){
-//      case 'Sales Lead':
-//          return 0;
-//      case 'Sales person':
-//          return 1;
-//      case 'Lead Engineer':
-//          return 2;
-//      case 'Software Engineer':
-//          return 3;
-//      case 'Accountant':
-//          return 4;
-//      case 'Legal Team Lead':
-//          return 5;
-//      case 'Lawyer':
-//          return 6;
-//     }
-    
+// async function uEmpRoles(){
+//     connection.query(
+//         'UPDATE employee SET title = ? Where ID = ?',
+//         ['South Africa', 1],
+//         (err, result) => {
+//           if (err) throw err;
+      
+//           console.log(`Changed ${result.changedRows} row(s)`);
+//         }
+//       );
 // }
